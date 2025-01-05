@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="MotionDetectorModel.cs~RF1db150f3.TMP" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="OpenCvSharp4.Windows" Version="4.10.0.20241108" />
     <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.10.0.20241108" />
   </ItemGroup>
