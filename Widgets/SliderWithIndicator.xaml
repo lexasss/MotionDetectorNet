@@ -1,0 +1,34 @@
+﻿<UserControl x:Name="userControl" x:Class="MotionDetectorNet.Widgets.SliderWithIndicator"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MotionDetectorNet.Widgets"
+             xmlns:conv="clr-namespace:MotionDetectorNet"
+             mc:Ignorable="d" 
+             d:DesignHeight="48" d:DesignWidth="120">
+    
+    <Grid DataContext="{Binding ElementName=userControl}">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0"
+               VerticalAlignment="Center" 
+               Content="{Binding Caption}"/>
+
+        <Label Grid.Row="0" Grid.Column="1"
+               Content="{Binding Value}"
+               ContentStringFormat="{}{0:0.######}"/>
+
+        <Slider x:Name="sldSlider" Grid.Row="1" Grid.ColumnSpan="2"
+                Margin="4,0,0,0"
+                ValueChanged="Slider_ValueChanged"/>
+        <!--Value="{Binding Value, Mode=TwoWay}"/-->
+    </Grid>
+</UserControl>

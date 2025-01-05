@@ -1,0 +1,166 @@
+﻿<Window x:Class="MotionDetectorNet.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:MotionDetectorNet"
+        xmlns:widgets="clr-namespace:MotionDetectorNet.Widgets"
+        mc:Ignorable="d"
+        Title="Motion Detector .NET"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="CanMinimize"
+        Closed="Window_Closed">
+    
+    <Window.Resources>
+        <local:BoolToVisibilityConverter x:Key="BoolToVis"/>
+        <local:BoolInversionConverter x:Key="InverseBool"/>
+        <local:BoolToButtonCaptionConverter x:Key="BoolToButtonCaption"/>
+
+        <Style x:Key="Header" TargetType="{x:Type Label}">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+
+        <Style x:Key="Iconic" TargetType="Button">
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28 "/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        
+        <ObjectDataProvider x:Key="frameTypes"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:FrameType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <x:Array x:Key="StartStopCaptions" Type="sys:String">
+            <sys:String>Start</sys:String>
+            <sys:String>Stop</sys:String>
+        </x:Array>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Grid.Column="0">
+            <Label Style="{StaticResource Header}"
+                   Content="Camera"/>
+            <ComboBox x:Name="cmbCameras"
+                    DataContext="{Binding MotionDetectorModel}"
+                    Margin="4,0"
+                    IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBool}}"
+                    ItemsSource="{Binding Cameras}"/>
+            <Button DataContext="{Binding MotionDetectorModel}"
+                    Content="{Binding IsRunning, Converter={StaticResource BoolToButtonCaption}, ConverterParameter={StaticResource StartStopCaptions}}"
+                    Margin="4"
+                    Height="36"
+                    Click="StartStop_Click"/>
+            
+            <Separator Margin="0,4"/>
+            
+            <Label Style="{StaticResource Header}"
+                   Content="Settings"/>
+            <Grid DataContext="{Binding Settings}"
+                  Margin="0,0,4,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <widgets:SliderWithIndicator Grid.Row="0" Grid.ColumnSpan="2"
+                                             Caption="Threshold"
+                                             IsLogarithmic="True"
+                                             Minimum="0.000005"
+                                             Maximum="0.5"
+                                             Value="{Binding Threshold, Mode=TwoWay}"/>
+                <widgets:SliderWithIndicator Grid.Row="1" Grid.ColumnSpan="2"
+                                             Caption="Sensitivity"
+                                             Minimum="5"
+                                             Maximum="250"
+                                             Value="{Binding Sensitivity, Mode=TwoWay}"/>
+                <widgets:SliderWithIndicator Grid.Row="2" Grid.ColumnSpan="2"
+                                             Caption="Motion level damp"
+                                             Minimum="0"
+                                             Maximum="0.95"
+                                             Value="{Binding MotionLevelDamp, Mode=TwoWay}"/>
+                <StackPanel Grid.Row="3" Grid.ColumnSpan="2"
+                            Margin="2,8,4,2">
+                    <Label Content="Image to display"/>
+                    <!--CheckBox Grid.Row="3" Grid.ColumnSpan="2"
+                          Margin="2,8,4,2"
+                          Content="Show camera"
+                          IsChecked="{Binding IsShowingCamera, Mode=TwoWay}"/-->
+                    <ComboBox
+                          Height="28"
+                          VerticalContentAlignment="Center"
+                          ItemsSource="{Binding Source={StaticResource frameTypes}}"
+                          SelectedItem="{Binding FrameType, Mode=TwoWay}" />
+                </StackPanel>
+                <CheckBox Grid.Row="4" Grid.ColumnSpan="2"
+                          Margin="2,8,4,2"
+                          Content="Save motion images to"
+                          IsChecked="{Binding IsSavingMotionImages, Mode=TwoWay}"/>
+                <Grid Grid.Row="6" Grid.ColumnSpan="2"
+                      Margin="4,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding LogFolder}"
+                               Margin="8,0"
+                               TextWrapping="NoWrap"
+                               FontFamily="Consolas"
+                               VerticalAlignment="Center"/>
+                    <Button Grid.Column="1" Style="{StaticResource Iconic}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Content="..."
+                            IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBool}}"
+                            Click="SelectFolder_Click"/>
+                </Grid>
+            </Grid>
+
+            <Separator Margin="0,4"/>
+
+            <Label Style="{StaticResource Header}"
+                   Content="Output"/>
+            <Grid DataContext="{Binding MotionDetectorModel}"
+                  Margin="4,0,4,4">
+                <Ellipse Fill="Green"
+                         Width="18"
+                         Height="18"
+                         HorizontalAlignment="Left"
+                         Visibility="{Binding IsInMotion, Converter={StaticResource BoolToVis}}"/>
+                <Label x:Name="lblOutput"
+                       HorizontalContentAlignment="Center"
+                       Content="{Binding Level, Mode=OneWay}"
+                       ContentStringFormat="{}{0:F6}"/>
+            </Grid>
+        </StackPanel>
+
+        <Image x:Name="imgFrame" Grid.Column="1"
+               Width="640"
+               Height="480"
+               DataContext="{Binding MotionDetectorModel}"
+               Source="{Binding Image}"/>
+    </Grid>
+</Window>
