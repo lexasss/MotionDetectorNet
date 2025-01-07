@@ -2,21 +2,21 @@
 
 namespace MotionDetectorNet;
 
-public class OpenCVDeviceEnumerator
+public class Camera(int id, string name)
 {
-    public class Camera(int id, string name)
-    {
-        public int ID => id;
-        public string Name => name;
-        public override string ToString() => name;
-    }
+    public int ID => id;
+    public string Name => name;
+    public override string ToString() => name;
+}
 
-    public OpenCVDeviceEnumerator()
+public static class OpenCVDeviceEnumerator
+{
+    static OpenCVDeviceEnumerator()
     {
         RefreshDeviceList();
     }
 
-    public void RefreshDeviceList()
+    public static void RefreshDeviceList()
     {
         // list of all CAP drivers (see highgui_c.h)
         var drivers = new List<CapDriver>
@@ -59,7 +59,7 @@ public class OpenCVDeviceEnumerator
         _drivers = drivers.ToArray();
     }
 
-    public Camera[] EnumerateCameras()
+    public static Camera[] EnumerateCameras()
     {
         var camIDs = new List<Camera>();
 
@@ -123,5 +123,5 @@ public class OpenCVDeviceEnumerator
         public string Comment;
     };
 
-    CapDriver[] _drivers = [];
+    static  CapDriver[] _drivers = [];
 }

@@ -1,23 +1,32 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
+using MotionDetectorNet.Alarms;
+using OpenCvSharp.Detail;
 
 namespace MotionDetectorNet;
 
-public partial class MainWindow : Window
+public partial class MainWindow : Window, INotifyPropertyChanged
 {
-    public MotionDetectorModel MotionDetectorModel => _motionDetectorModel;
-    public Settings Settings => _settings;
+    public MotionDetectorModel MotionDetectorModel { get; }
+    public Settings Settings { get; } = Settings.Load();
+    public Alarm[] Alarms { get; } = Alarm.GetDescendantTypes()
+        .Select(t => (Alarm?)Activator.CreateInstance(t))
+        .Where(alarm => alarm != null)
+        .Select(alarm => alarm!)
+        .ToArray();
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     public MainWindow()
     {
         InitializeComponent();
 
-        MotionDetector motionDetector = new MotionDetector(_settings);
+        _motionDetector = new MotionDetector(Settings);
+        _cameras = OpenCVDeviceEnumerator.EnumerateCameras();
 
-        _cameras = _deviceEnumerator.EnumerateCameras();
+        MotionDetectorModel = new MotionDetectorModel(Dispatcher, _cameras, _motionDetector, Alarms);
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MotionDetectorModel)));
 
-        _motionDetectorModel = new MotionDetectorModel(Dispatcher, motionDetector, _cameras);
-
-        DataContext = this;
         Title = App.Name;
 
         if (_cameras.Length > 0)
@@ -26,28 +35,24 @@ public partial class MainWindow : Window
         //WindowTools.HideWindowMinMaxButtons(this);
     }
 
-    // Internal
+    readonly MotionDetector _motionDetector;
+    readonly Camera[] _cameras;
 
-    readonly MotionDetectorModel _motionDetectorModel;
-    readonly Settings _settings = Settings.Load();
-    readonly OpenCVDeviceEnumerator _deviceEnumerator = new();
-
-    OpenCVDeviceEnumerator.Camera[] _cameras = [];
-
-    private void Window_Closed(object sender, EventArgs e)
+    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
-        _settings.Save();
+        _motionDetector.Dispose();
+        Settings.Save();
     }
 
     private void StartStop_Click(object sender, RoutedEventArgs e)
     {
-        if (_motionDetectorModel.IsRunning)
+        if (_motionDetector.IsRunning)
         {
-            _motionDetectorModel.MotionDetector.Stop();
+            _motionDetector.Stop();
         }
         else
         {
-            if (!_motionDetectorModel.MotionDetector.Start(_cameras[cmbCameras.SelectedIndex].ID))
+            if (!_motionDetector.Start(_cameras[cmbCameras.SelectedIndex].ID))
             {
                 MessageBox.Show("Cannot start video stream", Title, MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -56,6 +61,6 @@ public partial class MainWindow : Window
 
     private void SelectFolder_Click(object sender, RoutedEventArgs e)
     {
-        _settings.SelectLogFolder();
+        Settings.SelectLogFolder();
     }
 }

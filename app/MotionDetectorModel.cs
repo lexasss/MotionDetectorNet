@@ -1,5 +1,6 @@
-﻿using OpenCvSharp.WpfExtensions;
-using System.Collections.ObjectModel;
+﻿using DebounceThrottle;
+using MotionDetectorNet.Alarms;
+using OpenCvSharp.WpfExtensions;
 using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -9,8 +10,8 @@ namespace MotionDetectorNet;
 public class MotionDetectorModel : INotifyPropertyChanged
 {
     public MotionDetector MotionDetector { get; }
+    public Camera[] Cameras { get; }
 
-    public ObservableCollection<OpenCVDeviceEnumerator.Camera> Cameras { get; }
     public bool IsRunning { get; private set; }
     public double Level { get; private set; } = 0;
     public bool IsInMotion { get; private set; } = false;
@@ -18,11 +19,15 @@ public class MotionDetectorModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public MotionDetectorModel(Dispatcher dispather, MotionDetector motionDetector, OpenCVDeviceEnumerator.Camera[] cameras)
+    public MotionDetectorModel(Dispatcher dispather,
+        Camera[] cameras,
+        MotionDetector motionDetector, 
+        Alarm[] alarms)
     {
         _dispather = dispather;
+        _alarms = alarms;
         MotionDetector = motionDetector;
-        Cameras = new ObservableCollection<OpenCVDeviceEnumerator.Camera>(cameras);
+        Cameras = cameras;
 
         MotionDetector.ActivityChanged += (s, e) => _dispather.Invoke(() =>
         {
@@ -52,10 +57,40 @@ public class MotionDetectorModel : INotifyPropertyChanged
 
             Image = e.Frame.ToBitmapSource();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Image)));
+
+            if (IsInMotion)
+            {
+                _throttleDispatcher.Throttle(PlayAlarms);
+            }
+            else
+            {
+                TerminateAlarms();
+            }
         });
     }
 
     // Internal
 
     readonly Dispatcher _dispather;
+    readonly Alarm[] _alarms;
+
+    readonly ThrottleDispatcher _throttleDispatcher = new(TimeSpan.FromSeconds(2));
+
+    private void PlayAlarms()
+    {
+        foreach (var alarm in _alarms)
+        {
+            if (alarm.IsEnabled)
+                alarm.Start();
+        }
+    }
+
+    private void TerminateAlarms()
+    {
+        foreach (var alarm in _alarms)
+        {
+            if (alarm.IsEnabled)
+                alarm.Stop();
+        }
+    }
 }

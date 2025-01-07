@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Alarms\Beep.cs~RF2d742f19.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DebounceThrottle" Version="3.0.1" />
     <PackageReference Include="OpenCvSharp4.Windows" Version="4.10.0.20241108" />
     <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.10.0.20241108" />
   </ItemGroup>

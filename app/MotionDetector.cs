@@ -19,6 +19,8 @@ public class MotionDetector : IDisposable
     public event EventHandler<FrameReceivedEventArgs>? FrameReceived;
     public event EventHandler<ActivityChangedEventArgs>? ActivityChanged;
 
+    public bool IsRunning => _capture != null;
+
     public MotionDetector(Settings settings)
     {
         _settings = settings;
@@ -42,7 +44,7 @@ public class MotionDetector : IDisposable
 
         PrepareOutput();
 
-        _cancellationTokenSource = new CancellationTokenSource();
+        _isBreakRequested = false;
         Task.Run(ProcessFrames);
 
         ActivityChanged?.Invoke(this, new ActivityChangedEventArgs(true));
@@ -54,14 +56,11 @@ public class MotionDetector : IDisposable
     {
         if (_capture != null)
         {
-            _cancellationTokenSource.Cancel();
+            _isBreakRequested = true;
         }
 
         // We need to be sure that capturing has finished before deleting empty folder
-        while (_capture != null)
-        {
-            Thread.Sleep(10);
-        }
+        ShutdownCapture(1000);
 
         if (Directory.Exists(_settings.LogFolder))
         {
@@ -75,7 +74,8 @@ public class MotionDetector : IDisposable
 
     public void Dispose()
     {
-        Cv2.DestroyAllWindows();
+        //Cv2.DestroyAllWindows();
+        Stop();
         GC.SuppressFinalize(this);
     }
 
@@ -91,7 +91,7 @@ public class MotionDetector : IDisposable
     int _imageId = 0;
 
     VideoCapture? _capture;
-    CancellationTokenSource _cancellationTokenSource = new();
+    bool _isBreakRequested = false;
 
     private void ProcessFrames()
     {
@@ -99,7 +99,7 @@ public class MotionDetector : IDisposable
         var prevFrame = new Mat();
         var diffFrame = new Mat();
 
-        while (!_cancellationTokenSource.IsCancellationRequested)
+        while (!_isBreakRequested)
         {
             _capture?.Read(frame);
 
@@ -135,8 +135,7 @@ public class MotionDetector : IDisposable
             Cv2.WaitKey(30);
         }
 
-        _capture?.Release();
-        _capture = null;
+        ShutdownCapture();
 
         ActivityChanged?.Invoke(this, new ActivityChangedEventArgs(false));
     }
@@ -179,6 +178,28 @@ public class MotionDetector : IDisposable
         else if (_hasMotion)
         {
             _hasMotion = false;
+        }
+    }
+
+    private void ShutdownCapture(int waitIntervalBeforeShutdown = 0)
+    {
+        if (waitIntervalBeforeShutdown > 0)
+        {
+            int delay = 0;
+            while (_capture != null && delay < waitIntervalBeforeShutdown)
+            {
+                Thread.Sleep(10);
+                delay += 10;
+            }
+        }
+
+        if (_capture != null)
+        {
+            lock (_capture)
+            {
+                _capture?.Release();
+                _capture = null;
+            }
         }
     }
 }
