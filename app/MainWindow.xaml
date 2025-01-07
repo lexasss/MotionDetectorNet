@@ -66,10 +66,10 @@
                     Margin="4,0">
             <Label Style="{StaticResource Header}"
                    Content="Camera"/>
-            <ComboBox x:Name="cmbCameras"
-                      DataContext="{Binding MotionDetectorModel}"
+            <ComboBox DataContext="{Binding MotionDetectorModel}"
                       IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBool}}"
-                      ItemsSource="{Binding Cameras}"/>
+                      ItemsSource="{Binding Cameras}"
+                      SelectedIndex="{Binding CameraIndex, Mode=TwoWay}"/>
             <Button DataContext="{Binding MotionDetectorModel}"
                     Content="{Binding IsRunning, Converter={StaticResource BoolToButtonCaption}, ConverterParameter={StaticResource StartStopCaptions}}"
                     Margin="0,4"
