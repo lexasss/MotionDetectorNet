@@ -52,7 +52,7 @@ public class Settings : INotifyPropertyChanged
     {
         Settings? result = null;
 
-        var settingsJson = Properties.Settings.Default.SettingsJSON;
+        var settingsJson = Properties.Settings.Default.SettingsAsJson;
         if (!string.IsNullOrEmpty(settingsJson))
         {
             try
@@ -61,7 +61,7 @@ public class Settings : INotifyPropertyChanged
             }
             catch
             {
-                Properties.Settings.Default.SettingsJSON = "";
+                Properties.Settings.Default.SettingsAsJson = "";
                 Properties.Settings.Default.Save();
             }
         }
@@ -71,7 +71,7 @@ public class Settings : INotifyPropertyChanged
 
     public void Save()
     {
-        Properties.Settings.Default.SettingsJSON = JsonSerializer.Serialize(this);
+        Properties.Settings.Default.SettingsAsJson = JsonSerializer.Serialize(this);
         Properties.Settings.Default.Save();
     }
 

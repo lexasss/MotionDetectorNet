@@ -26,12 +26,24 @@ namespace MotionDetectorNet.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SettingsJSON {
+        public string SettingsAsJson {
             get {
-                return ((string)(this["SettingsJSON"]));
+                return ((string)(this["SettingsAsJson"]));
             }
             set {
-                this["SettingsJSON"] = value;
+                this["SettingsAsJson"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AlarmStates {
+            get {
+                return ((string)(this["AlarmStates"]));
+            }
+            set {
+                this["AlarmStates"] = value;
             }
         }
     }

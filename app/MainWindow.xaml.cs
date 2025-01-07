@@ -8,11 +8,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 {
     public MotionDetectorModel MotionDetectorModel { get; }
     public Settings Settings { get; } = Settings.Load();
-    public Alarm[] Alarms { get; } = Alarm.GetDescendantTypes()
-        .Select(t => (Alarm?)Activator.CreateInstance(t))
-        .Where(alarm => alarm != null)
-        .Select(alarm => alarm!)
-        .ToArray();
+    public Alarm[] Alarms { get; } = Alarm.Load();
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -41,6 +37,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         _motionDetector.Dispose();
         Settings.Save();
+        Alarm.Save(Alarms);
     }
 
     private void StartStop_Click(object sender, RoutedEventArgs e)
