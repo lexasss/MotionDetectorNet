@@ -45,16 +45,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void StartStop_Click(object sender, RoutedEventArgs e)
     {
-        if (_motionDetector.IsRunning)
+        if (MotionDetector.IsRunning)
         {
             _motionDetector.Stop();
         }
-        else if (Camera.CameraIndex >= 0)
+        else if (!_motionDetector.Start(Camera.SelectedCameraID))
         {
-            if (!_motionDetector.Start(Camera.Items[Camera.CameraIndex].ID))
-            {
-                MessageBox.Show("Cannot start video stream", Title, MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            MessageBox.Show("Cannot start video stream", Title, MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

@@ -19,8 +19,6 @@ public class MotionDetector : IDisposable
     public event EventHandler<FrameReceivedEventArgs>? FrameReceived;
     public event EventHandler<ActivityChangedEventArgs>? ActivityChanged;
 
-    public bool IsRunning => _capture != null;
-
     public MotionDetector(Settings settings)
     {
         _settings = settings;

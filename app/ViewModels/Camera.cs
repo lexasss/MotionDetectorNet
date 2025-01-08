@@ -13,12 +13,13 @@ public class Camera : INotifyPropertyChanged
         {
             _cameraIndex = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CameraIndex)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedCameraName)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCameraSelected)));
         }
     }
-    public string? SelectedCameraName => CameraIndex < Items.Length ? Items[CameraIndex].Name : null;
     public bool IsCameraSelected => _cameraIndex != -1;
+
+    public string? SelectedCameraName => CameraIndex < Items.Length ? Items[CameraIndex].Name : null;
+    public int SelectedCameraID => CameraIndex < Items.Length ? Items[CameraIndex].ID : -1;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
