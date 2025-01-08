@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Interop;
 
 
-namespace MotionDetectorNet;
+namespace MotionDetectorNet.Helpers;
 
 internal static class WindowTools
 {
@@ -32,7 +32,7 @@ internal static class WindowTools
 
     public static void SetCentralPosition(Window window)
     {
-        if (!Application.Current.MainWindow.IsLoaded || Application.Current.Dispatcher.Thread != System.Threading.Thread.CurrentThread)
+        if (!Application.Current.MainWindow.IsLoaded || Application.Current.Dispatcher.Thread != Thread.CurrentThread)
         {
             window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             window.ShowInTaskbar = true;
@@ -63,9 +63,9 @@ internal static class WindowTools
     const int WS_MINIMIZEBOX = 0x00020000;
 
     [DllImport("user32.dll", SetLastError = true)]
-    private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+    private static extern int GetWindowLong(nint hWnd, int nIndex);
     [DllImport("user32.dll")]
-    private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+    private static extern int SetWindowLong(nint hWnd, int nIndex, int dwNewLong);
 
     private static void RemoveSysMenu(Window window)
     {

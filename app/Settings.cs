@@ -13,8 +13,6 @@ public enum FrameType
 
 public class Settings : INotifyPropertyChanged
 {
-    public int CameraIndex { get; set; } = -1;
-
     /// <summary>
     /// Valid range is 0.000_001..0.5
     /// </summary>

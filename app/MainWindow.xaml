@@ -41,7 +41,7 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
         
-        <ObjectDataProvider x:Key="frameTypes"
+        <ObjectDataProvider x:Key="FrameTypes"
                             MethodName="GetValues"
                             ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
@@ -66,12 +66,11 @@
                     Margin="4,0">
             <Label Style="{StaticResource Header}"
                    Content="Camera"/>
-            <ComboBox DataContext="{Binding MotionDetectorModel}"
-                      IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBool}}"
-                      ItemsSource="{Binding Cameras}"
-                      SelectedIndex="{Binding CameraIndex, Mode=TwoWay}"/>
-            <Button DataContext="{Binding MotionDetectorModel}"
-                    Content="{Binding IsRunning, Converter={StaticResource BoolToButtonCaption}, ConverterParameter={StaticResource StartStopCaptions}}"
+            <ComboBox IsEnabled="{Binding Path=MotionDetector.IsRunning, Converter={StaticResource InverseBool}}"
+                      ItemsSource="{Binding Path=Camera.Items}"
+                      SelectedIndex="{Binding Path=Camera.CameraIndex, Mode=TwoWay}"/>
+            <Button Content="{Binding Path=MotionDetector.IsRunning, Converter={StaticResource BoolToButtonCaption}, ConverterParameter={StaticResource StartStopCaptions}}"
+                    IsEnabled="{Binding Path=Camera.IsCameraSelected}"
                     Margin="0,4"
                     Height="36"
                     Click="StartStop_Click"/>
@@ -114,7 +113,7 @@
                             Margin="0,8,0,0">
                     <Label Content="Image to display"/>
                     <ComboBox
-                          ItemsSource="{Binding Source={StaticResource frameTypes}}"
+                          ItemsSource="{Binding Source={StaticResource FrameTypes}}"
                           SelectedItem="{Binding FrameType, Mode=TwoWay}" />
                 </StackPanel>
                 <CheckBox Grid.Row="4" Grid.ColumnSpan="2"
@@ -133,11 +132,10 @@
                                FontFamily="Consolas"
                                VerticalAlignment="Center"/>
                     <Button Grid.Column="1" Style="{StaticResource Iconic}"
-                            DataContext="{Binding Path=MotionDetectorModel, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Content="..."
-                            IsEnabled="{Binding IsRunning, Converter={StaticResource InverseBool}}"
+                            IsEnabled="{Binding Path=MotionDetector.IsRunning, Mode=OneWay, Converter={StaticResource InverseBool}, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}"
                             Click="SelectFolder_Click"/>
                 </Grid>
             </Grid>
@@ -146,7 +144,7 @@
 
             <Label Style="{StaticResource Header}"
                    Content="Output"/>
-            <Grid DataContext="{Binding MotionDetectorModel}">
+            <Grid DataContext="{Binding MotionDetector}">
                 <Ellipse Fill="Green"
                          Width="18"
                          Height="18"
@@ -163,8 +161,7 @@
                Margin="4"
                Width="640"
                Height="480"
-               DataContext="{Binding MotionDetectorModel}"
-               Source="{Binding Image}"/>
+               Source="{Binding Path=MotionDetector.Image}"/>
 
         <Grid Grid.Column="2"
               Margin="4">

@@ -46,5 +46,17 @@ namespace MotionDetectorNet.Properties {
                 this["AlarmStates"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UsedCameraName {
+            get {
+                return ((string)(this["UsedCameraName"]));
+            }
+            set {
+                this["UsedCameraName"] = value;
+            }
+        }
     }
 }

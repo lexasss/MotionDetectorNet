@@ -5,31 +5,10 @@ using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace MotionDetectorNet;
+namespace MotionDetectorNet.ViewModels;
 
-public class MotionDetectorModel : INotifyPropertyChanged
+public class MotionDetector : INotifyPropertyChanged
 {
-    public MotionDetector MotionDetector { get; }
-    public Camera[] Cameras { get; }
-
-    /// <summary>
-    /// I do not like that this property duolicates Settings.CameraIndex,
-    /// and therefore I have to pass Settings instance to MotionDetectorModel,
-    /// but I need binding both CameraIndex and IsRunning in the same widget in the UI,
-    /// and there is no way to use different DataContext withing the same widget.
-    /// 
-    /// Or is there?
-    /// </summary>
-    public int CameraIndex
-    {
-        get => _settings.CameraIndex;
-        set
-        {
-            _settings.CameraIndex = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CameraIndex)));
-        }
-    }
-
     public bool IsRunning { get; private set; }
     public double Level { get; private set; } = 0;
     public bool IsInMotion { get; private set; } = false;
@@ -37,19 +16,15 @@ public class MotionDetectorModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public MotionDetectorModel(Dispatcher dispather,
-        Settings settings,
-        Camera[] cameras,
-        MotionDetector motionDetector, 
+    public MotionDetector(Dispatcher dispather,
+        MotionDetectorNet.MotionDetector motionDetector,
         Alarm[] alarms)
     {
-        _settings = settings;
         _dispather = dispather;
         _alarms = alarms;
-        MotionDetector = motionDetector;
-        Cameras = cameras;
+        _motionDetector = motionDetector;
 
-        MotionDetector.ActivityChanged += (s, e) => _dispather.Invoke(() =>
+        _motionDetector.ActivityChanged += (s, e) => _dispather.Invoke(() =>
         {
             IsRunning = e.IsRunning;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsRunning)));
@@ -67,7 +42,7 @@ public class MotionDetectorModel : INotifyPropertyChanged
             }
         });
 
-        MotionDetector.FrameReceived += (s, e) => _dispather.Invoke(() =>
+        _motionDetector.FrameReceived += (s, e) => _dispather.Invoke(() =>
         {
             Level = e.Level;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Level)));
@@ -91,8 +66,8 @@ public class MotionDetectorModel : INotifyPropertyChanged
 
     // Internal
 
-    readonly Settings _settings;
     readonly Dispatcher _dispather;
+    readonly MotionDetectorNet.MotionDetector _motionDetector;
     readonly Alarm[] _alarms;
 
     readonly ThrottleDispatcher _throttleDispatcher = new(TimeSpan.FromSeconds(2));

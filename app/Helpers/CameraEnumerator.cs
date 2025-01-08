@@ -1,8 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using System.Windows.Controls;
 
-namespace MotionDetectorNet;
+namespace MotionDetectorNet.Helpers;
 
 public class CameraEnumerator
 {
@@ -16,7 +15,7 @@ public class CameraEnumerator
         int Read(
             [In, MarshalAs(UnmanagedType.LPWStr)] string propertyName,
             [In, Out, MarshalAs(UnmanagedType.Struct)] ref object pVar,
-            [In] IntPtr pErrorLog);
+            [In] nint pErrorLog);
         [PreserveSig]
         int Write(
             [In, MarshalAs(UnmanagedType.LPWStr)] string propertyName,
@@ -52,14 +51,14 @@ public class CameraEnumerator
             // Create an enumerator to find filters of specified category
             enumDev.CreateClassEnumerator(VideoInputDevice, out IEnumMoniker enumMon, 0);
             Guid bagId = typeof(IPropertyBag).GUID;
-            while (enumMon.Next(1, moniker, IntPtr.Zero) == 0)
+            while (enumMon.Next(1, moniker, nint.Zero) == 0)
             {
                 // get property bag of the moniker
                 moniker[0].BindToStorage(null, null, ref bagId, out bagObj);
                 var bag = (IPropertyBag)bagObj;
                 // read FriendlyName
                 object val = "";
-                bag.Read("FriendlyName", ref val, IntPtr.Zero);
+                bag.Read("FriendlyName", ref val, nint.Zero);
                 //list in box
                 result.Add((string)val);
             }

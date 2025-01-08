@@ -1,6 +1,6 @@
 ﻿using OpenCvSharp;
 
-namespace MotionDetectorNet;
+namespace MotionDetectorNet.Helpers;
 
 public class Camera(int id, string name)
 {
@@ -74,7 +74,7 @@ public static class OpenCVDeviceEnumerator
             string driverName = _drivers[drv].EnumName;
             int driverEnum = _drivers[drv].EnumValue;
             //var driverComment = drivers[drv].comment;
-            
+
             // Testing the driver...
             bool found = false;
 
@@ -123,5 +123,5 @@ public static class OpenCVDeviceEnumerator
         public string Comment;
     };
 
-    static  CapDriver[] _drivers = [];
+    static CapDriver[] _drivers = [];
 }
