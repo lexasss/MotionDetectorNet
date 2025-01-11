@@ -50,8 +50,8 @@
         </ObjectDataProvider>
 
         <x:Array x:Key="StartStopCaptions" Type="sys:String">
-            <sys:String>Start</sys:String>
-            <sys:String>Stop</sys:String>
+            <sys:String>_Start</sys:String>
+            <sys:String>_Stop</sys:String>
         </x:Array>
     </Window.Resources>
     

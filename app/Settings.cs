@@ -28,8 +28,6 @@ public class Settings : INotifyPropertyChanged
 
     public string LogFolder { get; private set; }
 
-    public bool IsShowingCamera { get; set; } = false;
-
     public FrameType FrameType { get; set; } = FrameType.Original;
 
     /// <summary>
@@ -37,7 +35,7 @@ public class Settings : INotifyPropertyChanged
     /// for the current frame. Zero means "ignore previous motion level",
     /// one means "ignore new motion level". Valid range is 0..0.95
     /// </summary>
-    public double MotionLevelDamp { get; set; } = 0.2;
+    public double MotionLevelDamp { get; set; } = 0.8;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -79,7 +77,7 @@ public class Settings : INotifyPropertyChanged
         {
             Title = $"Select a folder to store {App.Name} log files",
             DefaultDirectory = !string.IsNullOrEmpty(LogFolder) ?
-                LogFolder :
+                Path.GetFullPath(LogFolder) :
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         };
 

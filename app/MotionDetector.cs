@@ -96,6 +96,7 @@ public class MotionDetector : IDisposable
         var frame = new Mat();
         var prevFrame = new Mat();
         var diffFrame = new Mat();
+        var thresholdFrame = new Mat();
 
         while (!_isBreakRequested)
         {
@@ -107,10 +108,9 @@ public class MotionDetector : IDisposable
             if (!prevFrame.Empty())
             {
                 Cv2.Absdiff(frame, prevFrame, diffFrame);
-                Mat thresholdFrame = diffFrame.Clone();
-
-                Cv2.CvtColor(thresholdFrame, thresholdFrame, ColorConversionCodes.BGR2GRAY);
+                Cv2.CvtColor(diffFrame, thresholdFrame, ColorConversionCodes.BGR2GRAY);
                 Cv2.Threshold(thresholdFrame, thresholdFrame, _settings.Sensitivity, 255, ThresholdTypes.Binary);
+
                 double motionLevel = Cv2.Sum(thresholdFrame).Val0 / _matrixSize;
 
                 _motionLevel = _motionLevel * _settings.MotionLevelDamp + motionLevel * (1.0 - _settings.MotionLevelDamp);
