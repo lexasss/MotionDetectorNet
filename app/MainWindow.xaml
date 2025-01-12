@@ -68,9 +68,9 @@
                    Content="Camera"/>
             <ComboBox IsEnabled="{Binding Path=MotionDetector.IsRunning, Converter={StaticResource InverseBool}}"
                       ItemsSource="{Binding Path=Camera.Items}"
-                      SelectedIndex="{Binding Path=Camera.CameraIndex, Mode=TwoWay}"/>
+                      SelectedIndex="{Binding Path=Camera.SelectedIndex, Mode=TwoWay}"/>
             <Button Content="{Binding Path=MotionDetector.IsRunning, Converter={StaticResource BoolToButtonCaption}, ConverterParameter={StaticResource StartStopCaptions}}"
-                    IsEnabled="{Binding Path=Camera.IsCameraSelected}"
+                    IsEnabled="{Binding Path=Camera.HasSelectedItem}"
                     Margin="0,4"
                     Height="36"
                     Click="StartStop_Click"/>

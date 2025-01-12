@@ -6,20 +6,20 @@ namespace MotionDetectorNet.ViewModels;
 public class Camera : INotifyPropertyChanged
 {
     public MotionDetectorNet.Camera.Camera[] Items { get; } = DeviceEnumerator.Get();
-    public int SeleectedIndex
+    public int SelectedIndex
     {
         get => _cameraIndex;
         set
         {
             _cameraIndex = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SeleectedIndex)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedIndex)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasSelectedItem)));
         }
     }
     public bool HasSelectedItem => _cameraIndex != -1;
 
-    public string? SelectedCameraName => SeleectedIndex >= 0 && SeleectedIndex < Items.Length ? Items[SeleectedIndex].Name : null;
-    public int SelectedCameraID => SeleectedIndex < Items.Length ? Items[SeleectedIndex].ID : -1;
+    public string? SelectedCameraName => SelectedIndex >= 0 && SelectedIndex < Items.Length ? Items[SelectedIndex].Name : null;
+    public int SelectedCameraID => SelectedIndex < Items.Length ? Items[SelectedIndex].ID : -1;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -31,7 +31,7 @@ public class Camera : INotifyPropertyChanged
         {
             if (Items[i].Name == usedCameraName)
             {
-                SeleectedIndex = i;
+                SelectedIndex = i;
                 break;
             }
         }
