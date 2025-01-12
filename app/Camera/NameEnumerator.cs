@@ -1,34 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace MotionDetectorNet.Helpers;
+namespace MotionDetectorNet.Camera;
 
-public class CameraEnumerator
+public static class NameEnumerator
 {
-    internal static readonly Guid SystemDeviceEnum = new Guid(0x62BE5D10, 0x60EB, 0x11D0, 0xBD, 0x3B, 0x00, 0xA0, 0xC9, 0x11, 0xCE, 0x86);
-    internal static readonly Guid VideoInputDevice = new Guid(0x860BB310, 0x5D01, 0x11D0, 0xBD, 0x3B, 0x00, 0xA0, 0xC9, 0x11, 0xCE, 0x86);
-
-    [ComImport, Guid("55272A00-42CB-11CE-8135-00AA004BB851"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface IPropertyBag
-    {
-        [PreserveSig]
-        int Read(
-            [In, MarshalAs(UnmanagedType.LPWStr)] string propertyName,
-            [In, Out, MarshalAs(UnmanagedType.Struct)] ref object pVar,
-            [In] nint pErrorLog);
-        [PreserveSig]
-        int Write(
-            [In, MarshalAs(UnmanagedType.LPWStr)] string propertyName,
-            [In, MarshalAs(UnmanagedType.Struct)] ref object pVar);
-    }
-
-    [ComImport, Guid("29840822-5B84-11D0-BD3B-00A0C911CE86"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface ICreateDevEnum
-    {
-        [PreserveSig]
-        int CreateClassEnumerator([In] ref Guid type, [Out] out IEnumMoniker enumMoniker, [In] int flags);
-    }
-
     public static string[] Get()
     {
         IMoniker[] moniker = new IMoniker[100];
@@ -64,9 +40,6 @@ public class CameraEnumerator
             }
 
         }
-        catch (Exception)
-        {
-        }
         finally
         {
             if (bagObj != null)
@@ -76,5 +49,31 @@ public class CameraEnumerator
         }
 
         return result.ToArray();
+    }
+
+    // Internal
+
+    internal static readonly Guid SystemDeviceEnum = new Guid(0x62BE5D10, 0x60EB, 0x11D0, 0xBD, 0x3B, 0x00, 0xA0, 0xC9, 0x11, 0xCE, 0x86);
+    internal static readonly Guid VideoInputDevice = new Guid(0x860BB310, 0x5D01, 0x11D0, 0xBD, 0x3B, 0x00, 0xA0, 0xC9, 0x11, 0xCE, 0x86);
+
+    [ComImport, Guid("55272A00-42CB-11CE-8135-00AA004BB851"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    internal interface IPropertyBag
+    {
+        [PreserveSig]
+        int Read(
+            [In, MarshalAs(UnmanagedType.LPWStr)] string propertyName,
+            [In, Out, MarshalAs(UnmanagedType.Struct)] ref object pVar,
+            [In] nint pErrorLog);
+        [PreserveSig]
+        int Write(
+            [In, MarshalAs(UnmanagedType.LPWStr)] string propertyName,
+            [In, MarshalAs(UnmanagedType.Struct)] ref object pVar);
+    }
+
+    [ComImport, Guid("29840822-5B84-11D0-BD3B-00A0C911CE86"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    internal interface ICreateDevEnum
+    {
+        [PreserveSig]
+        int CreateClassEnumerator([In] ref Guid type, [Out] out IEnumMoniker enumMoniker, [In] int flags);
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel;
-using MotionDetectorNet.Helpers;
+using MotionDetectorNet.Camera;
 
 namespace MotionDetectorNet.ViewModels;
 
 public class Camera : INotifyPropertyChanged
 {
-    public Helpers.Camera[] Items { get; } = OpenCVDeviceEnumerator.EnumerateCameras();
+    public MotionDetectorNet.Camera.Camera[] Items { get; } = DeviceEnumerator.Get();
     public int SeleectedIndex
     {
         get => _cameraIndex;

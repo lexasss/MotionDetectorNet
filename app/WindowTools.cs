@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Interop;
 
 
-namespace MotionDetectorNet.Helpers;
+namespace MotionDetectorNet;
 
 internal static class WindowTools
 {

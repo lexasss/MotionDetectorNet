@@ -24,12 +24,12 @@ public class MotionDetector : IDisposable
         _settings = settings;
     }
 
-    public bool Start(int cameraIndex = 0)
+    public bool Start(int cameraID = 0)
     {
         if (_capture != null)
             return false;
 
-        _capture = new VideoCapture(cameraIndex);
+        _capture = new VideoCapture(cameraID);
         if (!_capture.IsOpened())
         {
             _capture.Release();
