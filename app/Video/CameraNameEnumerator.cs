@@ -1,9 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace MotionDetectorNet.Camera;
+namespace MotionDetectorNet.Video;
 
-public static class NameEnumerator
+public static class CameraNameEnumerator
 {
     public static string[] Get()
     {

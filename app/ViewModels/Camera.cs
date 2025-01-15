@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel;
-using MotionDetectorNet.Camera;
+using MotionDetectorNet.Video;
 
 namespace MotionDetectorNet.ViewModels;
 
 public class Camera : INotifyPropertyChanged
 {
-    public MotionDetectorNet.Camera.Camera[] Items { get; } = DeviceEnumerator.Get();
+    public MotionDetectorNet.Video.Camera[] Items { get; } = CameraDeviceEnumerator.Get();
     public int SelectedIndex
     {
         get => _cameraIndex;

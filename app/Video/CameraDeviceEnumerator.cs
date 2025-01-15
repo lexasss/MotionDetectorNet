@@ -1,8 +1,8 @@
 ﻿using OpenCvSharp;
 
-namespace MotionDetectorNet.Camera;
+namespace MotionDetectorNet.Video;
 
-public static class DeviceEnumerator
+public static class CameraDeviceEnumerator
 {
     public static Camera[] Get()
     {
@@ -10,7 +10,7 @@ public static class DeviceEnumerator
 
         var frame = new Mat();
 
-        var cameraNames = NameEnumerator.Get();
+        var cameraNames = CameraNameEnumerator.Get();
         int cameraNameIndex = 0;
 
         // Searching for cameras IDs...

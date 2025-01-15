@@ -37,7 +37,7 @@ public class MotionDetector : INotifyPropertyChanged
                 IsInMotion = false;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsInMotion)));
 
-                Image = new OpenCvSharp.Mat(480, 640, OpenCvSharp.MatType.CV_8UC3, OpenCvSharp.Scalar.White).ToBitmapSource();
+                Image = MotionDetectorNet.Video.Camera.WhiteImage.ToBitmapSource();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Image)));
             }
         });
